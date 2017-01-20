@@ -21,21 +21,23 @@
  * example function written below.
  *
  */
-
 function noah_child_enqueue_styles() {
 	$theme = wp_get_theme();
+	// use the parent version for cachebusting
+	$parent = $theme->parent();
 
-	// First we need to load the template style since it won't be loaded by the parent
-	wp_enqueue_style( 'noah-style', get_template_directory_uri() . '/style.css', array(  ), $theme->get( 'Version' ) );
+	if ( ! is_rtl() ) {
+		wp_enqueue_style( 'noah-style', get_template_directory_uri() . '/style.css', array(), $parent->get( 'Version' ) );
+	}
 
 	// Here we are adding the child style.css while still retaining
 	// all of the parents assets (style.css, JS files, etc)
-	wp_enqueue_style( 'noah-child-style',
-		get_stylesheet_directory_uri() . '/style.css',
+	wp_enqueue_style( 'noah-child-style', get_stylesheet_directory_uri() . '/style.css',
 		array('noah-style') //make sure the the child's style.css comes after the parents so you can overwrite rules
 	);
 }
-//add_action( 'wp_enqueue_scripts', 'noah_child_enqueue_styles' );
+
+add_action( 'wp_enqueue_scripts', 'noah_child_enqueue_styles' );
 
 
 
